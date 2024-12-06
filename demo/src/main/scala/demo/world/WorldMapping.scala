@@ -62,6 +62,7 @@ trait WorldMapping[F[_]] extends DoobiePgMapping[F] {
   object countrylanguage extends TableDef("countrylanguage") {
     val countrycode = col("countrycode", Meta[String])
     val language = col("language", Meta[String])
+    val isOfficial = col("isofficial", Meta[Boolean])
   }
   // #db_tables
 
@@ -108,6 +109,7 @@ trait WorldMapping[F[_]] extends DoobiePgMapping[F] {
       type Language {
         name: String!
         countries: [Country!]!
+        isOfficial: Boolean!
       }
     """
   // #schema
@@ -158,6 +160,7 @@ trait WorldMapping[F[_]] extends DoobiePgMapping[F] {
       ObjectMapping(LanguageType)(
         SqlField("name", countrylanguage.language, key = true, associative = true),
         SqlField("countrycode", countrylanguage.countrycode, hidden = true),
+        SqlField("isOfficial", countrylanguage.isOfficial),
         SqlObject("countries", Join(countrylanguage.countrycode, country.code))
       )
       // #type_mappings
